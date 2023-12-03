@@ -21,6 +21,7 @@ else
     mkdir "${folder_name}/db" "${folder_name}/config" "${folder_name}/gphotos"
     cp sync.sh "${folder_name}"
     cp create_link.sh "${folder_name}"
+    cp remove_link.sh "${folder_name}"
     echo "Folder '$folder_name' created successfully."
 fi
 
