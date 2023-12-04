@@ -1,11 +1,7 @@
 #!/bin/bash
 
-# mount photos, albums link
+# mount photos link
 # /tmp/myspace/PhotoLibrary -> /Users/yujhe.li/Workspace/snippets/sync-gphotos/dev/gphotos/PhotoLibrary
-# /tmp/myspace/albums/me -> /Users/yujhe.li/Workspace/snippets/sync-gphotos/dev/gphotos/albums/me
-#
-# Note: synology Photos does not support symlink, need to use `mount --bind target_dir source_dir` command
-# https://www.albertogonzalez.net/how-to-create-a-symbolic-link-to-a-folder-on-a-synology-nas/
 
 work_dir=$(dirname "$(readlink -f "$0")")
 repo=$(basename "$work_dir")
@@ -46,20 +42,12 @@ function create_link() {
         umount "$source_link"
     fi
 
+    # https://www.albertogonzalez.net/how-to-create-a-symbolic-link-to-a-folder-on-a-synology-nas/
     mkdir -p "$source_link"
     mount --bind "$target_link" "$source_link"
     echo "Mount directory successfully. $source_link -> $target_link"
 }
 
-# mount directory for albums
-if [ -d "${work_dir}/gphotos/albums" ]; then
-    if [ -n "$(find "${work_dir}/gphotos/albums" -mindepth 1 -maxdepth 1 -type d -print -quit)" ]; then
-        for target_dir in "${work_dir}/gphotos/albums/"*; do
-            album=$(basename "$target_dir")
-            create_link "$target_dir" "${photos_space}/albums/${album}"
-        done
-    fi
-fi
-
 # create link for photos
+# note: synology Photos does not support symlink, we can not use symlink in the albums
 create_link "${work_dir}/gphotos/PhotoLibrary" "${photos_space}/PhotoLibrary"
