@@ -37,7 +37,8 @@ function create_link() {
     fi
 
     # remove the existing mount point
-    if df "$source_link" >/dev/null 2>&1; then
+    mount_info=$(df -a --output=target | grep "^$source_link\$")
+    if [ -n "$mount_info" ]; then
         echo "Umount $source_link"
         umount "$source_link"
     fi
