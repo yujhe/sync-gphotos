@@ -6,6 +6,8 @@
 # ├── db
 # └── gphotos
 
+work_dir=$(dirname "$(readlink -f "$0")")
+
 folder_name="$1"
 if [ -z "$folder_name" ]; then
     # ask the user for a folder name
@@ -19,10 +21,10 @@ else
     # Create the folder
     mkdir "$folder_name"
     mkdir "${folder_name}/db" "${folder_name}/config" "${folder_name}/gphotos"
-    cp sync.sh "${folder_name}"
-    cp add_tag.sh "${folder_name}"
-    cp create_link.sh "${folder_name}"
-    cp remove_link.sh "${folder_name}"
+    cp "${work_dir}/sync.sh" "${folder_name}"
+    cp "${work_dir}/add_tag.sh" "${folder_name}"
+    cp "${work_dir}/create_link.sh" "${folder_name}"
+    cp "${work_dir}/remove_link.sh" "${folder_name}"
     echo "Folder '$folder_name' created successfully."
 fi
 
