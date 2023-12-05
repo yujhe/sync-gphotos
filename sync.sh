@@ -62,6 +62,8 @@ function add_tag() {
     if ! exiftool -keywords -charset iptc=UTF8 "$photo_path" | grep -q "\b$tag\b"; then
         exiftool -keywords+="$tag" -charset iptc=UTF8 -overwrite_original "$photo_path"
         echo "Keyword '$tag' added to '$photo_path'."
+    else
+        echo "Keyword '$tag' already exist on '$photo_path', skip it."
     fi
 }
 
