@@ -40,12 +40,7 @@ docker run -it --rm \
 
 ### Step 2: Sync photos/albums from Google Photos
 
-You can modify the arguments in `sync.sh` if you need to customize the syncing job.
-
-**Note:** The syncing job will add album name to the keyword of photo file since symlink in Synology Photos is not working. (Need to install [ExifTool](https://exiftool.org/))
-
-You can add the syncing job to scheduler to keep syncing with Google Photos.
-
+You can modify the arguments in `sync.sh` if you need to customize the syncing job. If you want to keep syncing with Google Photos, you can add the syncing job to scheduler.
 
 ```sh
 # myphoto/
@@ -66,7 +61,13 @@ You can add the syncing job to scheduler to keep syncing with Google Photos.
 12-03 07:07:08 WARNING  Done.
 ```
 
-### Step 3: Link downloaded photos to Synology Photos space
+### (Optional) Step 3: Add tags to downloaded photos
+
+Since Synology Photos not support symbolic which means the albums can not link the photo, we use [ExifTool](https://exiftool.org/) too add the album name to the keyword of photo. You can use the tage to create a album on Synology Photos.
+
+**Note**: You need to install `ExifTool` before running the script ([reference](https://community.synology.com/enu/forum/68/post/144720?page=1&sort=oldest)).
+
+### Step 4: Link downloaded photos to Synology Photos space
 
 The link will be removed after reboot. You can trigger the link job by scheduler when the server is rebooted.
 
@@ -80,4 +81,3 @@ Mount directory successfully. /volume1/homes/user1/Photos/PhotoLibrary -> /volum
 
 - https://gilesknap.github.io/gphotos-sync/main/tutorials/installation.html
 - https://bullyrooks.com/index.php/2021/02/02/backing-up-google-photos-to-your-synology-nas/
-- https://community.synology.com/enu/forum/68/post/144720?page=1&sort=oldest
