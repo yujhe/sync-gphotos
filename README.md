@@ -42,6 +42,10 @@ docker run -it --rm \
 
 You can modify the arguments in `sync.sh` if you need to customize the syncing job. If you want to keep syncing with Google Photos, you can add the syncing job to scheduler.
 
+After photos/albums are downloaded, we will use [ExifTool](https://exiftool.org/) too add the album name to the keyword of photo. You can use the tage to create a album on Synology Photos.
+
+**Note:**: Synology Photos not support symbolic which means the albums can not link the photo.
+
 ```sh
 # myphoto/
 ./sync.sh
@@ -61,13 +65,7 @@ You can modify the arguments in `sync.sh` if you need to customize the syncing j
 12-03 07:07:08 WARNING  Done.
 ```
 
-### (Optional) Step 3: Add tags to downloaded photos
-
-Since Synology Photos not support symbolic which means the albums can not link the photo, we use [ExifTool](https://exiftool.org/) too add the album name to the keyword of photo. You can use the tage to create a album on Synology Photos.
-
-**Note**: You need to install `ExifTool` before running the script ([reference](https://community.synology.com/enu/forum/68/post/144720?page=1&sort=oldest)).
-
-### Step 4: Link downloaded photos to Synology Photos space
+### Step 3: Link downloaded photos to Synology Photos space
 
 The link will be removed after reboot. You can trigger the link job by scheduler when the server is rebooted.
 

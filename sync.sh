@@ -46,3 +46,23 @@ docker run --rm \
     -v "${work_dir}/gphotos":/gphotos \
     gilesknap/gphotos-sync:latest \
     ${sync_args[*]} /storage
+
+# add album tag: build docker image if the image does not exist
+image_name="gphotos-sync-tag"
+if ! docker image inspect "$image_name" &>/dev/null; then
+    docker build -t "$image_name" .
+    # check if the build was successful
+    if [ $? -eq 0 ]; then
+        echo "Docker image '$image_name' successfully built."
+    else
+        echo "Error: Failed to build Docker image '$image_name'."
+        exit 1
+    fi
+fi
+
+# add album tag
+docker run --rm \
+    --name "gphotos-sync-tag" \
+    -v "${work_dir}":/app \
+    -w /app gphotos-sync-tag \
+    python add_tag.py
