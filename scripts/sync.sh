@@ -57,7 +57,7 @@ echo "====== [END] DOWNLOAD PHOTOS ====="
 # build docker image if the image does not exist
 image_name="gphotos-sync-tag"
 if ! docker image inspect "$image_name" &>/dev/null; then
-    docker build -t "$image_name" -f "${work_dir}/scripts/Dockerfile" .
+    DOCKER_BUILDKIT=1 docker build -t "$image_name" -f "${work_dir}/scripts/Dockerfile" .
     # check if the build was successful
     if [ $? -eq 0 ]; then
         echo "Docker image '$image_name' successfully built."
