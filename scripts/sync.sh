@@ -1,6 +1,6 @@
 #!/bin/bash
 
-work_dir=$(dirname "$(readlink -f "$0")")
+work_dir=$(dirname $(dirname "$(readlink -f "$0")"))
 repo=$(basename "$work_dir")
 
 # check if the secret exists
@@ -18,6 +18,8 @@ if [ ! -e "$token_file" ]; then
     exit 1
 fi
 
+echo "====== [START] DOWNLOAD PHOTOS ====="
+
 sync_args=(
     "--photos-path /gphotos/PhotoLibrary"
     "--albums-path /gphotos/albums"
@@ -33,6 +35,9 @@ sync_args=(
     # uncomment this, if you want to resync photos/albums
     # "--flush-index"
 
+    # uncomment this, if you want to rescan Google Photos
+    # "--rescan"
+
     # uncomment this, if you want to sync photos before/after the date (inclusive)
     # note: not work, if you are syncing album which contains photos not between the date
     # "--start-date yyyy-mm-dd"
@@ -47,10 +52,12 @@ docker run --rm \
     gilesknap/gphotos-sync:latest \
     ${sync_args[*]} /storage
 
-# add album tag: build docker image if the image does not exist
+echo "====== [END] DOWNLOAD PHOTOS ====="
+
+# build docker image if the image does not exist
 image_name="gphotos-sync-tag"
 if ! docker image inspect "$image_name" &>/dev/null; then
-    docker build -t "$image_name" .
+    docker build -t "$image_name" -f "${work_dir}/scripts/Dockerfile" .
     # check if the build was successful
     if [ $? -eq 0 ]; then
         echo "Docker image '$image_name' successfully built."
@@ -60,9 +67,13 @@ if ! docker image inspect "$image_name" &>/dev/null; then
     fi
 fi
 
-# add album tag
+echo "====== [START] ADD TAGS ====="
+
 docker run --rm \
     --name "gphotos-sync-tag" \
-    -v "${work_dir}":/app \
+    -v "${work_dir}/gphotos":/gphotos \
+    -v "${work_dir}/scripts":/app \
     -w /app gphotos-sync-tag \
     python add_tag.py
+
+echo "====== [END] ADD TAGS ====="

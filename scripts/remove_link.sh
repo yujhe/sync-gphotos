@@ -3,7 +3,7 @@
 # remove all existing link of photos
 # /tmp/myspace/PhotoLibrary -> /Users/yujhe.li/Workspace/snippets/sync-gphotos/dev/gphotos/PhotoLibrary
 
-work_dir=$(dirname "$(readlink -f "$0")")
+work_dir=$(dirname $(dirname "$(readlink -f "$0")"))
 repo=$(basename "$work_dir")
 
 photos_space="$1"
@@ -21,4 +21,11 @@ fi
 
 # remove photos link
 # note: synology Photos does not support symlink, we can not use symlink in the albums
-umount "${photos_space}/PhotoLibrary"
+source_link="${photos_space}/PhotoLibrary"
+umount "$source_link"
+if [ $? -eq 0 ]; then
+    echo "Umount '${source_link}' successfully."
+else
+    echo "Error: Failed to umount '${source_link}'."
+    exit 1
+fi

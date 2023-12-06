@@ -5,7 +5,7 @@ import shlex
 import subprocess
 from functools import partial
 
-ALUMNS_PATH = './gphotos/albums'
+ALUMNS_PATH = '/gphotos/albums'
 
 
 def add_tag(photo_path: str, tag: str) -> None:

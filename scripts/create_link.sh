@@ -3,7 +3,7 @@
 # mount photos link
 # /tmp/myspace/PhotoLibrary -> /Users/yujhe.li/Workspace/snippets/sync-gphotos/dev/gphotos/PhotoLibrary
 
-work_dir=$(dirname "$(readlink -f "$0")")
+work_dir=$(dirname $(dirname "$(readlink -f "$0")"))
 repo=$(basename "$work_dir")
 
 photos_space="$1"
@@ -25,10 +25,8 @@ function create_link() {
         exit 1
     fi
 
-    # target_link: This is the file or directory to which the symbolic link will point.
-    # source_link: This is the name of the symbolic link that you're creating.
-    target_link="$1"
-    source_link="$2"
+    target_link="$1" # the file or directory to which the symbolic link will point.
+    source_link="$2" # the name of the symbolic link that you're creating.
 
     # check if the target directory exists
     if [ ! -d "$target_link" ]; then
@@ -39,14 +37,25 @@ function create_link() {
     # remove the existing mount point
     mount_info=$(df -a --output=target | grep "^$source_link\$")
     if [ -n "$mount_info" ]; then
-        echo "Umount $source_link"
         umount "$source_link"
+
+        if [ $? -eq 0 ]; then
+            echo "Umount '$source_link' successfully."
+        else
+            echo "Error: Failed to umount '${source_link}'."
+            exit 1
+        fi
     fi
 
     # https://www.albertogonzalez.net/how-to-create-a-symbolic-link-to-a-folder-on-a-synology-nas/
     mkdir -p "$source_link"
     mount --bind "$target_link" "$source_link"
-    echo "Mount directory successfully. $source_link -> $target_link"
+    if [ $? -eq 0 ]; then
+        echo "Mount directory successfully. $source_link -> $target_link"
+    else
+        echo "Error: Failed to mount '${target_link}'"
+        exit 1
+    fi
 }
 
 # create link for photos
