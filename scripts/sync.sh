@@ -53,27 +53,3 @@ docker run --rm \
     ${sync_args[*]} /storage
 
 echo "====== [END] DOWNLOAD PHOTOS ====="
-
-# build docker image if the image does not exist
-image_name="gphotos-sync-tag"
-if ! docker image inspect "$image_name" &>/dev/null; then
-    DOCKER_BUILDKIT=1 docker build -t "$image_name" -f "${work_dir}/scripts/Dockerfile" .
-    # check if the build was successful
-    if [ $? -eq 0 ]; then
-        echo "Docker image '$image_name' successfully built."
-    else
-        echo "Error: Failed to build Docker image '$image_name'."
-        exit 1
-    fi
-fi
-
-echo "====== [START] ADD TAGS ====="
-
-docker run --rm \
-    --name "gphotos-sync-tag" \
-    -v "${work_dir}/gphotos":/gphotos \
-    -v "${work_dir}/scripts":/app \
-    -w /app gphotos-sync-tag \
-    python add_tag.py
-
-echo "====== [END] ADD TAGS ====="
