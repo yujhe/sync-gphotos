@@ -4,6 +4,22 @@ Helper scripts to sync Google photos, albums to local file system by using [gpho
 
 ## Quickstart
 
+### Requirement
+
+Docker installation is required.
+To execute docker by non-root user, follow the steps to setup permission.
+
+```sh
+# reate the group "docker" from the ui or cli
+sudo synogroup --add docker
+# make it the group of the docker.sock
+sudo chown root:docker /var/run/docker.sock
+# assign the user to the docker group in the ui or cli
+sudo synogroup --member docker {username}
+# login into ssh as {username} and try
+```
+
+
 ### Step 1: Initial folder structure
 
 ```sh
