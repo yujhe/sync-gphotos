@@ -49,6 +49,7 @@ docker run --rm \
     -v "${work_dir}/db":/storage \
     -v "${work_dir}/config":/config \
     -v "${work_dir}/gphotos":/gphotos \
+    -u $(id -u):$(id -g) \
     gilesknap/gphotos-sync:latest \
     ${sync_args[*]} /storage
 
