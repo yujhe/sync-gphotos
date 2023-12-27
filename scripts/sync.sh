@@ -54,3 +54,18 @@ docker run --rm \
     ${sync_args[*]} /storage
 
 echo "====== [END] DOWNLOAD PHOTOS ====="
+
+# FIXME: to index photos in Synology Photos, we need to update the access time (the origin access time is incorrect)
+echo "====== [START] UPDATE FILE ACCESS TIME ====="
+
+# touch all files for the 1st time execution
+find "${work_dir}/gphotos/PhotoLibrary/" -type f -group $(id -g) -exec touch -a {} \;
+
+# touch last 3 month photos
+#for i in {0..3}; do
+#    pdir="${work_dir}/gphotos/PhotoLibrary/$(date -d "-${i} month" -u +%Y/%m)/"
+#    echo "Touch photos in ${pdir}"
+#    find "${pdir}" -type f -ctime -1 -group $(id -g) -exec touch -a {} \;
+#done
+
+echo "====== [DONE] UPDATE FILE ACCESS TIME ====="
