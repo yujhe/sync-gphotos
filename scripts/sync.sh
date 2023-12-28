@@ -3,6 +3,11 @@
 work_dir=$(dirname $(dirname "$(readlink -f "$0")"))
 repo=$(basename "$work_dir")
 
+function show_time() {
+    local time=$(date +"%Y-%m-%d %H:%M:%S")
+	echo "$time"
+}
+
 # check if the secret exists
 secret_file="${work_dir}/config/client_secret.json"
 if [ ! -e "$secret_file" ]; then
@@ -18,7 +23,7 @@ if [ ! -e "$token_file" ]; then
     exit 1
 fi
 
-echo "====== [START] DOWNLOAD PHOTOS ====="
+echo "====== $(show_time) [START] DOWNLOAD PHOTOS ====="
 
 sync_args=(
     "--photos-path /gphotos/PhotoLibrary"
@@ -53,10 +58,10 @@ docker run --rm \
     gilesknap/gphotos-sync:latest \
     ${sync_args[*]} /storage
 
-echo "====== [END] DOWNLOAD PHOTOS ====="
+echo "====== $(show_time) [END] DOWNLOAD PHOTOS ====="
 
 # FIXME: to index photos in Synology Photos, we need to update the access time (the origin access time is incorrect)
-echo "====== [START] UPDATE FILE ACCESS TIME ====="
+echo "====== $(show_time) [START] UPDATE FILE ACCESS TIME ====="
 
 # touch all files for the 1st time execution
 find "${work_dir}/gphotos/PhotoLibrary/" -type f -group $(id -g) -exec touch -a {} \;
@@ -68,4 +73,4 @@ find "${work_dir}/gphotos/PhotoLibrary/" -type f -group $(id -g) -exec touch -a 
 #    find "${pdir}" -type f -ctime -1 -group $(id -g) -exec touch -a {} \;
 #done
 
-echo "====== [DONE] UPDATE FILE ACCESS TIME ====="
+echo "====== $(show_time) [DONE] UPDATE FILE ACCESS TIME ====="
